@@ -1,82 +1,115 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 
 // Импортируем данные текстов
-import { books } from './data/index';
+import { books } from './data/index.js';
 
 function App() {
     const [selectedBook, setSelectedBook] = useState(null);
     const [selectedChapter, setSelectedChapter] = useState(0);
-    const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [fontSize, setFontSize] = useState(18);
     const [darkMode, setDarkMode] = useState(false);
     const [showVerseNumbers, setShowVerseNumbers] = useState(true);
-    const [expandedSections, setExpandedSections] = useState({
-        'old-testament': true,
-        'new-testament': true,
-        'marcion-gospel': true,
-        'apostolikon': true,
-        'nag-hammadi': true,
-        'other': true
-    });
+    const [expandedSections, setExpandedSections] = useState({});
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+    // Определяем мобильное устройство
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 768);
+            if (window.innerWidth >= 768 && !sidebarOpen) {
+                setSidebarOpen(true);
+            }
+            if (window.innerWidth < 768 && sidebarOpen) {
+                setSidebarOpen(false);
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, [sidebarOpen]);
 
     // При загрузке устанавливаем первую книгу
     useEffect(() => {
-        if (books.length > 0) {
+        if (books.length > 0 && !selectedBook) {
             setSelectedBook(books[0]);
+            // Автоматически разворачиваем все разделы на десктопе
+            if (!isMobile) {
+                setExpandedSections({
+                    'old-testament': true,
+                    'new-testament': true,
+                    'marcion-gospel': true,
+                    'apostolikon': true,
+                    'nag-hammadi': true,
+                    'other': true
+                });
+            }
         }
     }, []);
 
-    const handleBookSelect = (book) => {
+    const handleBookSelect = useCallback((book) => {
         setSelectedBook(book);
         setSelectedChapter(0);
-    };
+        if (isMobile) {
+            setSidebarOpen(false);
+        }
+        // Прокрутка к верху страницы
+        window.scrollTo(0, 0);
+    }, [isMobile]);
 
-    const handleChapterSelect = (index) => {
+    const handleChapterSelect = useCallback((index) => {
         setSelectedChapter(index);
-    };
+        // Прокрутка к началу главы
+        const textContent = document.querySelector('.text-content');
+        if (textContent) {
+            textContent.scrollTo(0, 0);
+        }
+    }, []);
 
-    const nextChapter = () => {
+    const nextChapter = useCallback(() => {
         if (selectedBook && selectedChapter < selectedBook.chapters.length - 1) {
             setSelectedChapter(selectedChapter + 1);
+            window.scrollTo(0, 0);
         }
-    };
+    }, [selectedBook, selectedChapter]);
 
-    const prevChapter = () => {
+    const prevChapter = useCallback(() => {
         if (selectedBook && selectedChapter > 0) {
             setSelectedChapter(selectedChapter - 1);
+            window.scrollTo(0, 0);
         }
-    };
+    }, [selectedBook, selectedChapter]);
 
-    const toggleSidebar = () => {
-        setSidebarOpen(!sidebarOpen);
-    };
+    const toggleSidebar = useCallback(() => {
+        setSidebarOpen(prev => !prev);
+    }, []);
 
-    const increaseFontSize = () => {
+    const increaseFontSize = useCallback(() => {
         setFontSize(prev => Math.min(prev + 1, 24));
-    };
+    }, []);
 
-    const decreaseFontSize = () => {
+    const decreaseFontSize = useCallback(() => {
         setFontSize(prev => Math.max(prev - 1, 14));
-    };
+    }, []);
 
-    const toggleDarkMode = () => {
-        setDarkMode(!darkMode);
-    };
+    const toggleDarkMode = useCallback(() => {
+        setDarkMode(prev => !prev);
+    }, []);
 
-    const toggleVerseNumbers = () => {
-        setShowVerseNumbers(!showVerseNumbers);
-    };
+    const toggleVerseNumbers = useCallback(() => {
+        setShowVerseNumbers(prev => !prev);
+    }, []);
 
-    const toggleSection = (section) => {
+    const toggleSection = useCallback((section) => {
         setExpandedSections(prev => ({
             ...prev,
             [section]: !prev[section]
         }));
-    };
+    }, []);
 
     // Функция для рендеринга текста с номерами стихов
-    const renderTextWithVerses = (content) => {
+    const renderTextWithVerses = useCallback((content) => {
         return content.map((verse, index) => (
             <div key={index} className="verse-container">
                 {showVerseNumbers && (
@@ -87,21 +120,38 @@ function App() {
                 <span className="verse-text">{verse}</span>
             </div>
         ));
-    };
+    }, [showVerseNumbers]);
 
     // Группируем книги по категориям
-    const oldTestamentBooks = books.filter(book => book.category === 'old-testament');
-    const newTestamentBooks = books.filter(book => book.category === 'new-testament');
-    const marcionGospelBooks = books.filter(book => book.category === 'marcion-gospel');
-    const apostolikonBooks = books.filter(book => book.category === 'apostolikon');
-    const nagHammadiBooks = books.filter(book => book.category === 'nag-hammadi');
-    const otherBooks = books.filter(book => book.category === 'other');
+    const booksByCategory = {
+        'old-testament': books.filter(book => book.category === 'old-testament'),
+        'new-testament': books.filter(book => book.category === 'new-testament'),
+        'marcion-gospel': books.filter(book => book.category === 'marcion-gospel'),
+        'apostolikon': books.filter(book => book.category === 'apostolikon'),
+        'nag-hammadi': books.filter(book => book.category === 'nag-hammadi'),
+        'other': books.filter(book => book.category === 'other')
+    };
+
+    const categoryTitles = {
+        'old-testament': 'Ветхий Завет',
+        'new-testament': 'Новый Завет',
+        'marcion-gospel': 'Евангелие Господне (Маркиона)',
+        'apostolikon': 'Апостоликон Маркиона',
+        'nag-hammadi': 'Апокрифы Наг-Хаммади',
+        'other': 'Другие тексты'
+    };
+
+    const categoryClasses = {
+        'marcion-gospel': 'marcion-gospel-header',
+        'apostolikon': 'apostolikon-header'
+    };
 
     return (
         <div className={`App ${darkMode ? 'dark-mode' : ''}`}>
             <header className="app-header">
                 <button className="sidebar-toggle" onClick={toggleSidebar}>
-                    ☰
+                    {sidebarOpen ? '✕' : '☰'}
+                    <span className="menu-text">{sidebarOpen ? 'Закрыть' : 'Меню'}</span>
                 </button>
                 <h1>Христианская библиотека</h1>
                 <div className="controls">
@@ -122,148 +172,91 @@ function App() {
             </header>
 
             <div className="main-content">
-                {sidebarOpen && (
-                    <aside className="sidebar">
-                        <h2>Книги</h2>
-                        <div className="book-categories">
-
-                            {/* Ветхий Завет */}
-                            <div className="category-section">
-                                <h3 onClick={() => toggleSection('old-testament')} className="category-header">
-                                    <span className="collapse-icon">{expandedSections['old-testament'] ? '▼' : '►'}</span>
-                                    Ветхий Завет
-                                </h3>
-                                {expandedSections['old-testament'] && oldTestamentBooks.map(book => (
-                                    <div
-                                        key={book.id}
-                                        className={`book-item ${selectedBook?.id === book.id ? 'selected' : ''}`}
-                                        onClick={() => handleBookSelect(book)}
-                                    >
-                                        {book.title}
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* Новый Завет */}
-                            <div className="category-section">
-                                <h3 onClick={() => toggleSection('new-testament')} className="category-header">
-                                    <span className="collapse-icon">{expandedSections['new-testament'] ? '▼' : '►'}</span>
-                                    Новый Завет
-                                </h3>
-                                {expandedSections['new-testament'] && newTestamentBooks.map(book => (
-                                    <div
-                                        key={book.id}
-                                        className={`book-item ${selectedBook?.id === book.id ? 'selected' : ''}`}
-                                        onClick={() => handleBookSelect(book)}
-                                    >
-                                        {book.title}
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* Евангелие Господне (Маркиона) */}
-                            <div className="category-section">
-                                <h3 onClick={() => toggleSection('marcion-gospel')} className="category-header marcion-gospel-header">
-                                    <span className="collapse-icon">{expandedSections['marcion-gospel'] ? '▼' : '►'}</span>
-                                    Евангелие Господне (Маркиона)
-                                </h3>
-                                {expandedSections['marcion-gospel'] && marcionGospelBooks.map(book => (
-                                    <div
-                                        key={book.id}
-                                        className={`book-item ${selectedBook?.id === book.id ? 'selected' : ''}`}
-                                        data-category="marcion-gospel"
-                                        onClick={() => handleBookSelect(book)}
-                                    >
-                                        {book.title}
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* Апостоликон Маркиона */}
-                            <div className="category-section">
-                                <h3 onClick={() => toggleSection('apostolikon')} className="category-header apostolikon-header">
-                                    <span className="collapse-icon">{expandedSections['apostolikon'] ? '▼' : '►'}</span>
-                                    Апостоликон Маркиона
-                                </h3>
-                                {expandedSections['apostolikon'] && apostolikonBooks.map(book => (
-                                    <div
-                                        key={book.id}
-                                        className={`book-item ${selectedBook?.id === book.id ? 'selected' : ''}`}
-                                        data-category="apostolikon"
-                                        onClick={() => handleBookSelect(book)}
-                                    >
-                                        {book.title}
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* Апокрифы Наг-Хаммади */}
-                            <div className="category-section">
-                                <h3 onClick={() => toggleSection('nag-hammadi')} className="category-header">
-                                    <span className="collapse-icon">{expandedSections['nag-hammadi'] ? '▼' : '►'}</span>
-                                    Апокрифы Наг-Хаммади
-                                </h3>
-                                {expandedSections['nag-hammadi'] && nagHammadiBooks.map(book => (
-                                    <div
-                                        key={book.id}
-                                        className={`book-item ${selectedBook?.id === book.id ? 'selected' : ''}`}
-                                        onClick={() => handleBookSelect(book)}
-                                    >
-                                        {book.title}
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* Другие тексты */}
-                            <div className="category-section">
-                                <h3 onClick={() => toggleSection('other')} className="category-header">
-                                    <span className="collapse-icon">{expandedSections['other'] ? '▼' : '►'}</span>
-                                    Другие тексты
-                                </h3>
-                                {expandedSections['other'] && otherBooks.map(book => (
-                                    <div
-                                        key={book.id}
-                                        className={`book-item ${selectedBook?.id === book.id ? 'selected' : ''}`}
-                                        onClick={() => handleBookSelect(book)}
-                                    >
-                                        {book.title}
-                                    </div>
-                                ))}
-                            </div>
-
-                        </div>
-                    </aside>
+                {/* Overlay для мобильных устройств */}
+                {isMobile && sidebarOpen && (
+                    <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />
                 )}
+
+                <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
+                    <div className="sidebar-content">
+                        <h2>Книги</h2>
+                        <div className="book-search">
+                            <input
+                                type="text"
+                                placeholder="Поиск книги..."
+                                className="search-input"
+                            />
+                        </div>
+                        <div className="book-categories">
+                            {Object.entries(booksByCategory).map(([category, categoryBooks]) => (
+                                categoryBooks.length > 0 && (
+                                    <div key={category} className="category-section">
+                                        <h3
+                                            onClick={() => toggleSection(category)}
+                                            className={`category-header ${categoryClasses[category] || ''}`}
+                                        >
+                      <span className="collapse-icon">
+                        {expandedSections[category] ? '▼' : '►'}
+                      </span>
+                                            {categoryTitles[category]}
+                                            <span className="book-count">({categoryBooks.length})</span>
+                                        </h3>
+                                        {expandedSections[category] && categoryBooks.map(book => (
+                                            <div
+                                                key={book.id}
+                                                className={`book-item ${selectedBook?.id === book.id ? 'selected' : ''}`}
+                                                data-category={category}
+                                                onClick={() => handleBookSelect(book)}
+                                            >
+                                                {book.title}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )
+                            ))}
+                        </div>
+                    </div>
+                </aside>
 
                 <main className="reader">
                     {selectedBook ? (
                         <>
                             <div className="reader-header">
-                                <div>
+                                <div className="book-info">
                                     <h2>{selectedBook.title}</h2>
                                     {selectedBook.description && (
                                         <p className="book-description">{selectedBook.description}</p>
                                     )}
                                 </div>
                                 <div className="chapter-selector">
-                                    <button onClick={prevChapter} disabled={selectedChapter === 0}>
-                                        ← Предыдущая
-                                    </button>
-                                    <select
-                                        value={selectedChapter}
-                                        onChange={(e) => handleChapterSelect(parseInt(e.target.value))}
+                                    <button
+                                        onClick={prevChapter}
+                                        disabled={selectedChapter === 0}
+                                        className="chapter-nav-btn"
                                     >
-                                        {selectedBook.chapters.map((_, index) => (
-                                            <option key={index} value={index}>
-                                                Глава {index + 1}
-                                            </option>
-                                        ))}
-                                    </select>
+                                        ←
+                                    </button>
+                                    <div className="chapter-info">
+                                        <span className="chapter-label">Глава</span>
+                                        <select
+                                            value={selectedChapter}
+                                            onChange={(e) => handleChapterSelect(parseInt(e.target.value))}
+                                            className="chapter-select"
+                                        >
+                                            {selectedBook.chapters.map((_, index) => (
+                                                <option key={index} value={index}>
+                                                    {index + 1}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <span className="total-chapters">/{selectedBook.chapters.length}</span>
+                                    </div>
                                     <button
                                         onClick={nextChapter}
                                         disabled={selectedChapter === selectedBook.chapters.length - 1}
+                                        className="chapter-nav-btn"
                                     >
-                                        Следующая →
+                                        →
                                     </button>
                                 </div>
                             </div>
@@ -283,16 +276,53 @@ function App() {
                                 <div className="bible-text">
                                     {renderTextWithVerses(selectedBook.chapters[selectedChapter].content)}
                                 </div>
+
+                                {/* Навигация внизу страницы */}
+                                <div className="bottom-navigation">
+                                    <button
+                                        onClick={prevChapter}
+                                        disabled={selectedChapter === 0}
+                                        className="nav-btn large"
+                                    >
+                                        ← Предыдущая глава
+                                    </button>
+                                    <button
+                                        onClick={nextChapter}
+                                        disabled={selectedChapter === selectedBook.chapters.length - 1}
+                                        className="nav-btn large"
+                                    >
+                                        Следующая глава →
+                                    </button>
+                                </div>
                             </div>
                         </>
                     ) : (
                         <div className="welcome-message">
                             <h2>Добро пожаловать в библиотеку христианских текстов</h2>
-                            <p>Выберите книгу из левого меню для начала чтения.</p>
+                            <p>Выберите книгу из меню для начала чтения.</p>
+                            <div className="welcome-stats">
+                                <div className="stat">
+                                    <span className="stat-number">{books.length}</span>
+                                    <span className="stat-label">книг</span>
+                                </div>
+                                <div className="stat">
+                  <span className="stat-number">{
+                      books.reduce((total, book) => total + book.chapters.length, 0)
+                  }</span>
+                                    <span className="stat-label">глав</span>
+                                </div>
+                            </div>
                         </div>
                     )}
                 </main>
             </div>
+
+            {/* Плавающая кнопка меню для мобильных */}
+            {isMobile && !sidebarOpen && (
+                <button className="floating-menu-btn" onClick={toggleSidebar}>
+                    ☰
+                </button>
+            )}
         </div>
     );
 }
