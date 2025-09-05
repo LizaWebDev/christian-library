@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import './App.css';
-
-// Импортируем данные текстов
-import { books } from './data/index.js';
+import { books } from './data';
 
 function App() {
     const [selectedBook, setSelectedBook] = useState(null);
@@ -12,59 +10,116 @@ function App() {
     const [darkMode, setDarkMode] = useState(false);
     const [showVerseNumbers, setShowVerseNumbers] = useState(true);
     const [expandedSections, setExpandedSections] = useState({});
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [isMobile, setIsMobile] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const [currentSearchIndex, setCurrentSearchIndex] = useState(-1);
+    const [showSearch, setShowSearch] = useState(false);
 
     // Определяем мобильное устройство
     useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth < 768);
-            if (window.innerWidth >= 768 && !sidebarOpen) {
-                setSidebarOpen(true);
-            }
-            if (window.innerWidth < 768 && sidebarOpen) {
-                setSidebarOpen(false);
-            }
+        const checkMobile = () => {
+            const mobile = window.innerWidth < 768;
+            setIsMobile(mobile);
+            setSidebarOpen(!mobile);
         };
 
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, [sidebarOpen]);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
 
-    // При загрузке устанавливаем первую книгу
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    // Восстановление настроек
     useEffect(() => {
-        if (books.length > 0 && !selectedBook) {
-            setSelectedBook(books[0]);
-            // Автоматически разворачиваем все разделы на десктопе
-            if (!isMobile) {
-                setExpandedSections({
-                    'old-testament': true,
-                    'new-testament': true,
-                    'marcion-gospel': true,
-                    'apostolikon': true,
-                    'nag-hammadi': true,
-                    'other': true
+        const savedFontSize = localStorage.getItem('fontSize');
+        const savedDarkMode = localStorage.getItem('darkMode');
+        const savedVerseNumbers = localStorage.getItem('showVerseNumbers');
+
+        if (savedFontSize) setFontSize(Number(savedFontSize));
+        if (savedDarkMode) setDarkMode(savedDarkMode === 'true');
+        if (savedVerseNumbers) setShowVerseNumbers(savedVerseNumbers === 'true');
+    }, []);
+
+    // Поиск по текстам
+    const performSearch = useCallback((query) => {
+        if (!query.trim()) {
+            setSearchResults([]);
+            setCurrentSearchIndex(-1);
+            return;
+        }
+
+        const results = [];
+        const lowerQuery = query.toLowerCase();
+
+        books.forEach(book => {
+            book.chapters.forEach((chapter, chapterIndex) => {
+                chapter.content.forEach((verse, verseIndex) => {
+                    if (verse.toLowerCase().includes(lowerQuery)) {
+                        results.push({ bookId: book.id, bookTitle: book.title, chapterIndex, verseIndex, verse });
+                    }
                 });
-            }
+            });
+        });
+
+        setSearchResults(results);
+        setCurrentSearchIndex(results.length > 0 ? 0 : -1);
+    }, []);
+
+    // Переход к найденному результату
+    const goToSearchResult = useCallback((result) => {
+        const book = books.find(b => b.id === result.bookId);
+        if (book) {
+            setSelectedBook(book);
+            setSelectedChapter(result.chapterIndex);
+
+            setTimeout(() => {
+                const verseElement = document.getElementById(`verse-${result.bookId}-${result.chapterIndex}-${result.verseIndex}`);
+                if (verseElement) {
+                    verseElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                    verseElement.classList.add('search-current');
+
+                    setTimeout(() => {
+                        verseElement.classList.remove('search-current');
+                    }, 2000);
+                }
+            }, 100);
         }
     }, []);
+
+    // Навигация по результатам поиска
+    const navigateSearchResults = useCallback((direction) => {
+        if (searchResults.length === 0) return;
+
+        let newIndex;
+        if (direction === 'next') {
+            newIndex = (currentSearchIndex + 1) % searchResults.length;
+        } else {
+            newIndex = (currentSearchIndex - 1 + searchResults.length) % searchResults.length;
+        }
+
+        setCurrentSearchIndex(newIndex);
+        goToSearchResult(searchResults[newIndex]);
+    }, [searchResults, currentSearchIndex, goToSearchResult]);
 
     const handleBookSelect = useCallback((book) => {
         setSelectedBook(book);
         setSelectedChapter(0);
+        setSearchQuery('');
+        setSearchResults([]);
+        setCurrentSearchIndex(-1);
         if (isMobile) {
             setSidebarOpen(false);
         }
-        // Прокрутка к верху страницы
         window.scrollTo(0, 0);
     }, [isMobile]);
 
     const handleChapterSelect = useCallback((index) => {
         setSelectedChapter(index);
-        // Прокрутка к началу главы
-        const textContent = document.querySelector('.text-content');
-        if (textContent) {
-            textContent.scrollTo(0, 0);
-        }
+        window.scrollTo(0, 0);
     }, []);
 
     const nextChapter = useCallback(() => {
@@ -85,6 +140,10 @@ function App() {
         setSidebarOpen(prev => !prev);
     }, []);
 
+    const closeSidebar = useCallback(() => {
+        setSidebarOpen(false);
+    }, []);
+
     const increaseFontSize = useCallback(() => {
         setFontSize(prev => Math.min(prev + 1, 24));
     }, []);
@@ -101,6 +160,15 @@ function App() {
         setShowVerseNumbers(prev => !prev);
     }, []);
 
+    const toggleSearch = useCallback(() => {
+        setShowSearch(prev => !prev);
+        if (showSearch) {
+            setSearchQuery('');
+            setSearchResults([]);
+            setCurrentSearchIndex(-1);
+        }
+    }, [showSearch]);
+
     const toggleSection = useCallback((section) => {
         setExpandedSections(prev => ({
             ...prev,
@@ -108,34 +176,55 @@ function App() {
         }));
     }, []);
 
-    // Функция для рендеринга текста с номерами стихов
+    // Функция для рендеринга текста с подсветкой поиска
     const renderTextWithVerses = useCallback((content) => {
-        return content.map((verse, index) => (
-            <div key={index} className="verse-container">
-                {showVerseNumbers && (
-                    <span className="verse-number">
-            {index + 1}
-          </span>
-                )}
-                <span className="verse-text">{verse}</span>
-            </div>
-        ));
-    }, [showVerseNumbers]);
+        return content.map((verse, index) => {
+            const verseId = `verse-${selectedBook.id}-${selectedChapter}-${index}`;
+            const isCurrentSearch = currentSearchIndex >= 0 &&
+                searchResults[currentSearchIndex]?.bookId === selectedBook.id &&
+                searchResults[currentSearchIndex]?.chapterIndex === selectedChapter &&
+                searchResults[currentSearchIndex]?.verseIndex === index;
+
+            let highlightedVerse = verse;
+            if (searchQuery) {
+                const regex = new RegExp(`(${searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                highlightedVerse = verse.replace(regex, '<mark class="search-highlight">$1</mark>');
+            }
+
+            return (
+                <div
+                    key={index}
+                    className={`verse-container ${isCurrentSearch ? 'search-current' : ''}`}
+                    id={verseId}
+                >
+                    {showVerseNumbers && (
+                        <span className="verse-number">
+              {index + 1}
+            </span>
+                    )}
+                    <span
+                        className="verse-text"
+                        dangerouslySetInnerHTML={{ __html: highlightedVerse }}
+                    />
+                </div>
+            );
+        });
+    }, [searchQuery, searchResults, currentSearchIndex, selectedBook, selectedChapter, showVerseNumbers]);
 
     // Группируем книги по категориям
-    const booksByCategory = {
+    const booksByCategory = useMemo(() => ({
         'old-testament': books.filter(book => book.category === 'old-testament'),
         'new-testament': books.filter(book => book.category === 'new-testament'),
         'marcion-gospel': books.filter(book => book.category === 'marcion-gospel'),
         'apostolikon': books.filter(book => book.category === 'apostolikon'),
         'nag-hammadi': books.filter(book => book.category === 'nag-hammadi'),
         'other': books.filter(book => book.category === 'other')
-    };
+    }), []);
 
     const categoryTitles = {
         'old-testament': 'Ветхий Завет',
         'new-testament': 'Новый Завет',
-        'marcion-gospel': 'Евангелие Господне (Маркиона)',
+        'marcion-gospel': 'Евангелие Господне',
         'apostolikon': 'Апостоликон Маркиона',
         'nag-hammadi': 'Апокрифы Наг-Хаммади',
         'other': 'Другие тексты'
@@ -150,8 +239,7 @@ function App() {
         <div className={`App ${darkMode ? 'dark-mode' : ''}`}>
             <header className="app-header">
                 <button className="sidebar-toggle" onClick={toggleSidebar}>
-                    {sidebarOpen ? '✕' : '☰'}
-                    <span className="menu-text">{sidebarOpen ? 'Закрыть' : 'Меню'}</span>
+                    ☰
                 </button>
                 <h1>Христианская библиотека</h1>
                 <div className="controls">
@@ -165,27 +253,93 @@ function App() {
                     >
                         №
                     </button>
+                    <button
+                        onClick={toggleSearch}
+                        title="Поиск"
+                        className={showSearch ? 'active' : ''}
+                    >
+                        🔍
+                    </button>
                     <button onClick={toggleDarkMode} title="Ночной режим">
                         {darkMode ? '☀️' : '🌙'}
                     </button>
                 </div>
             </header>
 
+            {/* Поисковая панель */}
+            {showSearch && (
+                <div className="search-panel">
+                    <div className="search-container">
+                        <input
+                            type="text"
+                            placeholder="Введите слово или фразу для поиска..."
+                            value={searchQuery}
+                            onChange={(e) => {
+                                setSearchQuery(e.target.value);
+                                performSearch(e.target.value);
+                            }}
+                            className="search-input-large"
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' && searchResults.length > 0) {
+                                    navigateSearchResults('next');
+                                }
+                                if (e.key === 'Escape') {
+                                    setShowSearch(false);
+                                    setSearchQuery('');
+                                    setSearchResults([]);
+                                }
+                            }}
+                        />
+                        {searchResults.length > 0 && (
+                            <div className="search-results-info">
+                <span className="search-count">
+                  Найдено: {searchResults.length} совпадений
+                </span>
+                                <div className="search-navigation">
+                  <span className="current-position">
+                    {currentSearchIndex + 1} / {searchResults.length}
+                  </span>
+                                    <button
+                                        onClick={() => navigateSearchResults('prev')}
+                                        disabled={searchResults.length <= 1}
+                                        title="Предыдущий результат"
+                                    >
+                                        ←
+                                    </button>
+                                    <button
+                                        onClick={() => navigateSearchResults('next')}
+                                        disabled={searchResults.length <= 1}
+                                        title="Следующий результат"
+                                    >
+                                        →
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                        {searchQuery && searchResults.length === 0 && (
+                            <div className="search-no-results">
+                                Ничего не найдено для "{searchQuery}"
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
             <div className="main-content">
                 {/* Overlay для мобильных устройств */}
                 {isMobile && sidebarOpen && (
-                    <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />
+                    <div className="sidebar-overlay" onClick={closeSidebar} />
                 )}
 
                 <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
                     <div className="sidebar-content">
-                        <h2>Книги</h2>
-                        <div className="book-search">
-                            <input
-                                type="text"
-                                placeholder="Поиск книги..."
-                                className="search-input"
-                            />
+                        <div className="sidebar-header">
+                            <h2>Книги</h2>
+                            {!isMobile && (
+                                <button className="close-sidebar" onClick={closeSidebar} title="Закрыть меню">
+                                    ✕
+                                </button>
+                            )}
                         </div>
                         <div className="book-categories">
                             {Object.entries(booksByCategory).map(([category, categoryBooks]) => (
@@ -219,7 +373,32 @@ function App() {
                 </aside>
 
                 <main className="reader">
-                    {selectedBook ? (
+                    {!selectedBook ? (
+                        <div className="welcome-message">
+                            <h2>Добро пожаловать в библиотеку христианских текстов!</h2>
+                            <p>Выберите книгу из меню для начала чтения.</p>
+                            <div className="welcome-stats">
+                                <div className="stat">
+                                    <span className="stat-number">{books.length}</span>
+                                    <span className="stat-label">книг</span>
+                                </div>
+                                <div className="stat">
+                  <span className="stat-number">{
+                      books.reduce((total, book) => total + book.chapters.length, 0)
+                  }</span>
+                                    <span className="stat-label">глав</span>
+                                </div>
+                                <div className="stat">
+                  <span className="stat-number">{
+                      books.reduce((total, book) => total +
+                          book.chapters.reduce((chapTotal, chapter) =>
+                              chapTotal + chapter.content.length, 0), 0)
+                  }</span>
+                                    <span className="stat-label">стихов</span>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
                         <>
                             <div className="reader-header">
                                 <div className="book-info">
@@ -233,6 +412,7 @@ function App() {
                                         onClick={prevChapter}
                                         disabled={selectedChapter === 0}
                                         className="chapter-nav-btn"
+                                        title="Предыдущая глава"
                                     >
                                         ←
                                     </button>
@@ -255,6 +435,7 @@ function App() {
                                         onClick={nextChapter}
                                         disabled={selectedChapter === selectedBook.chapters.length - 1}
                                         className="chapter-nav-btn"
+                                        title="Следующая глава"
                                     >
                                         →
                                     </button>
@@ -296,30 +477,13 @@ function App() {
                                 </div>
                             </div>
                         </>
-                    ) : (
-                        <div className="welcome-message">
-                            <h2>Добро пожаловать в библиотеку христианских текстов</h2>
-                            <p>Выберите книгу из меню для начала чтения.</p>
-                            <div className="welcome-stats">
-                                <div className="stat">
-                                    <span className="stat-number">{books.length}</span>
-                                    <span className="stat-label">книг</span>
-                                </div>
-                                <div className="stat">
-                  <span className="stat-number">{
-                      books.reduce((total, book) => total + book.chapters.length, 0)
-                  }</span>
-                                    <span className="stat-label">глав</span>
-                                </div>
-                            </div>
-                        </div>
                     )}
                 </main>
             </div>
 
             {/* Плавающая кнопка меню для мобильных */}
             {isMobile && !sidebarOpen && (
-                <button className="floating-menu-btn" onClick={toggleSidebar}>
+                <button className="floating-menu-btn" onClick={toggleSidebar} title="Открыть меню">
                     ☰
                 </button>
             )}
