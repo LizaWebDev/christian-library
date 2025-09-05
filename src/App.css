@@ -1,38 +1,663 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Georgia', serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f9f5e9;
+}
+
 .App {
-  text-align: center;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.App.dark-mode {
+    background-color: #1a1a1a;
+    color: #e6e6e6;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.app-header {
+    background: linear-gradient(135deg, #3a506b 0%, #2c3e50 100%);
+    color: white;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.dark-mode .app-header {
+    background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
 }
 
-.App-link {
-  color: #61dafb;
+.app-header h1 {
+    font-size: 1.8rem;
+    margin: 0;
+    font-weight: 300;
+    letter-spacing: 1px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.sidebar-toggle {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.sidebar-toggle:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.controls button {
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: white;
+    padding: 0.5rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.controls button:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+}
+
+.controls button.active {
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
+.font-size-label {
+    font-size: 0.9rem;
+    margin: 0 0.3rem;
+    min-width: 3rem;
+    text-align: center;
+}
+
+.main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 320px;
+    background: linear-gradient(to bottom, #f8f4e9 0%, #e9e1d1 100%);
+    padding: 1.5rem;
+    overflow-y: auto;
+    border-right: 1px solid #d4c9b4;
+    transition: all 0.3s ease;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.dark-mode .sidebar {
+    background: linear-gradient(to bottom, #2c3e50 0%, #1a252f 100%);
+    border-right-color: #34495e;
+    color: #e6e6e6;
+}
+
+.sidebar h2 {
+    margin-bottom: 1.5rem;
+    color: #3a506b;
+    font-size: 1.5rem;
+    text-align: center;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #d4c9b4;
+}
+
+.dark-mode .sidebar h2 {
+    color: #ecf0f1;
+    border-bottom-color: #34495e;
+}
+
+.category-section {
+    margin-bottom: 1.5rem;
+}
+
+.category-header {
+    margin: 1.2rem 0 0.8rem 0;
+    padding: 0.8rem 1rem;
+    background: linear-gradient(135deg, #4a6580 0%, #3a506b 100%);
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.dark-mode .category-header {
+    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+}
+
+.category-header:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.collapse-icon {
+    margin-right: 0.8rem;
+    font-size: 0.8rem;
+    width: 1rem;
+    text-align: center;
+}
+
+.book-item {
+    padding: 1rem 1.2rem;
+    cursor: pointer;
+    border-radius: 6px;
+    margin-bottom: 0.4rem;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.dark-mode .book-item {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.book-item:hover {
+    background: rgba(74, 101, 128, 0.1);
+    border-left-color: #4a6580;
+    transform: translateX(2px);
+}
+
+.dark-mode .book-item:hover {
+    background: rgba(52, 152, 219, 0.1);
+    border-left-color: #3498db;
+}
+
+.book-item.selected {
+    background: linear-gradient(135deg, #3a506b 0%, #2c3e50 100%);
+    color: white;
+    border-left-color: #1abc9c;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.dark-mode .book-item.selected {
+    background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+    border-left-color: #ffffff;
+}
+
+.reader {
+    flex: 1;
+    padding: 2.5rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="rgba(245,240,230,0.3)" width="100" height="100"/><path fill="rgba(210,200,180,0.2)" d="M0,0L100,100M100,0L0,100"/></svg>');
+}
+
+.dark-mode .reader {
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="rgba(30,30,40,0.3)" width="100" height="100"/><path fill="rgba(20,20,30,0.2)" d="M0,0L100,100M100,0L0,100"/></svg>');
+}
+
+.reader-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid #e9e1d1;
+}
+
+.dark-mode .reader-header {
+    border-bottom-color: #34495e;
+}
+
+.reader-header h2 {
+    color: #3a506b;
+    margin: 0 0 0.5rem 0;
+    font-size: 2.2rem;
+    font-weight: 400;
+}
+
+.dark-mode .reader-header h2 {
+    color: #1abc9c;
+}
+
+.book-description {
+    color: #666;
+    font-style: italic;
+    margin: 0;
+    font-size: 1.1rem;
+    max-width: 500px;
+}
+
+.dark-mode .book-description {
+    color: #bdc3c7;
+}
+
+.chapter-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.dark-mode .chapter-selector {
+    background: rgba(44, 62, 80, 0.8);
+}
+
+.chapter-selector button {
+    padding: 0.8rem 1.2rem;
+    background: linear-gradient(135deg, #3a506b 0%, #2c3e50 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.dark-mode .chapter-selector button {
+    background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+}
+
+.chapter-selector button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.chapter-selector button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.dark-mode .chapter-selector button:disabled {
+    background: #7f8c8d;
+}
+
+.chapter-selector select {
+    padding: 0.8rem 1.2rem;
+    border: 2px solid #d4c9b4;
+    border-radius: 8px;
+    background: white;
+    font-size: 1rem;
+    min-width: 120px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.dark-mode .chapter-selector select {
+    background: #2c3e50;
+    border-color: #34495e;
+    color: #e6e6e6;
+}
+
+.chapter-selector select:focus {
+    outline: none;
+    border-color: #3a506b;
+}
+
+.dark-mode .chapter-selector select:focus {
+    border-color: #1abc9c;
+}
+
+.text-content {
+    line-height: 1.8;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.chapter-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.dark-mode .chapter-header {
+    background: rgba(44, 62, 80, 0.7);
+}
+
+.chapter-header h3 {
+    margin-bottom: 1rem;
+    color: #3a506b;
+    font-size: 1.8rem;
+    font-weight: 400;
+}
+
+.dark-mode .chapter-header h3 {
+    color: #1abc9c;
+}
+
+.chapter-description {
+    color: #666;
+    font-style: italic;
+    margin: 0;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.dark-mode .chapter-description {
+    color: #bdc3c7;
+}
+
+.bible-text {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    border: 1px solid #e9e1d1;
+}
+
+.dark-mode .bible-text {
+    background: rgba(44, 62, 80, 0.9);
+    border-color: #34495e;
+}
+
+/* Улучшенные стили для номеров стихов */
+.verse-container {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1.2rem;
+    line-height: 1.9;
+    position: relative;
+    transition: all 0.3s ease;
+    padding: 0.5rem 0.5rem 0.5rem 0;
+    border-radius: 8px;
+}
+
+.verse-container:hover {
+    background: rgba(74, 101, 128, 0.05);
+    transform: translateX(5px);
+}
+
+.dark-mode .verse-container:hover {
+    background: rgba(52, 152, 219, 0.08);
+}
+
+.verse-number {
+    font-size: 0.8em;
+    font-weight: 700;
+    color: #5c6b7e;
+    margin-right: 1rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #f0f6ff 0%, #e8f1ff 100%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    height: 2.2rem;
+    text-align: center;
+    box-shadow:
+            0 2px 4px rgba(0,0,0,0.1),
+            inset 0 1px 2px rgba(255,255,255,0.8);
+    border: 1px solid #d1e0ff;
+    transition: all 0.3s ease;
+    position: relative;
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+}
+
+.dark-mode .verse-number {
+    color: #e3f2fd;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    border-color: #4a6580;
+    box-shadow:
+            0 2px 6px rgba(0,0,0,0.3),
+            inset 0 1px 2px rgba(255,255,255,0.1);
+}
+
+.verse-container:hover .verse-number {
+    background: linear-gradient(135deg, #3a506b 0%, #2c3e50 100%);
+    color: white;
+    transform: scale(1.1) translateY(-1px);
+    box-shadow:
+            0 4px 8px rgba(0,0,0,0.2),
+            inset 0 2px 4px rgba(255,255,255,0.3);
+}
+
+.dark-mode .verse-container:hover .verse-number {
+    background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+    box-shadow:
+            0 4px 12px rgba(26, 188, 156, 0.3),
+            inset 0 2px 4px rgba(255,255,255,0.2);
+}
+
+.verse-text {
+    flex: 1;
+    text-align: justify;
+    padding-right: 1rem;
+    position: relative;
+}
+
+.welcome-message {
+    text-align: center;
+    margin-top: 3rem;
+    color: #5c6b7e;
+    padding: 3rem;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.dark-mode .welcome-message {
+    color: #bdc3c7;
+    background: rgba(44, 62, 80, 0.8);
+}
+
+.welcome-message h2 {
+    font-size: 2.2rem;
+    margin-bottom: 1.5rem;
+    color: #3a506b;
+    font-weight: 300;
+}
+
+.dark-mode .welcome-message h2 {
+    color: #1abc9c;
+}
+
+.welcome-message p {
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.dark-mode .welcome-message p {
+    color: #bdc3c7;
+}
+
+/* Адаптивность для номеров стихов */
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 280px;
+    }
+
+    .reader {
+        padding: 2rem;
+    }
+
+    .reader-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .chapter-selector {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        left: -320px;
+        height: calc(100% - 70px);
+        z-index: 100;
+        top: 70px;
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
+
+    .reader {
+        padding: 1.5rem;
+    }
+
+    .reader-header h2 {
+        font-size: 1.8rem;
+    }
+
+    .verse-container {
+        padding: 0.3rem 0.3rem 0.3rem 0;
+    }
+
+    .verse-number {
+        min-width: 2.2rem;
+        height: 2rem;
+        margin-right: 0.8rem;
+        font-size: 0.75em;
+    }
+
+    .verse-text {
+        padding-right: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .app-header {
+        padding: 1rem;
+    }
+
+    .app-header h1 {
+        font-size: 1.4rem;
+    }
+
+    .controls {
+        gap: 0.3rem;
+    }
+
+    .controls button {
+        padding: 0.4rem 0.6rem;
+    }
+
+    .font-size-label {
+        display: none;
+    }
+
+    .verse-container {
+        padding: 0.2rem 0.2rem 0.2rem 0;
+    }
+
+    .verse-number {
+        min-width: 2rem;
+        height: 1.8rem;
+        margin-right: 0.6rem;
+        padding: 0.2rem 0.4rem;
+    }
+}
+
+/* Анимация для номеров стихов */
+@keyframes versePulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.verse-container:hover .verse-number {
+    animation: versePulse 0.6s ease;
+}
+
+/* Стили для длинных стихов */
+.verse-container.long-verse {
+    margin-bottom: 1.5rem;
+}
+
+.verse-container.long-verse .verse-number {
+    align-self: flex-start;
+    margin-top: 0.3rem;
+}
+
+/* Специальные стили для Евангелия Господнего */
+.marcion-gospel-header {
+    background: linear-gradient(135deg, #e67e22 0%, #d35400 100%) !important;
+}
+
+.dark-mode .marcion-gospel-header {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%) !important;
+}
+
+.book-item[data-category="marcion-gospel"] {
+    border-left: 3px solid #e67e22;
+}
+
+.book-item[data-category="marcion-gospel"]:hover {
+    border-left-color: #d35400;
+    background: rgba(230, 126, 34, 0.1);
+}
+
+.dark-mode .book-item[data-category="marcion-gospel"]:hover {
+    border-left-color: #f39c12;
+    background: rgba(243, 156, 18, 0.15);
+}
+
+.book-item[data-category="marcion-gospel"].selected {
+    background: linear-gradient(135deg, #e67e22 0%, #d35400 100%) !important;
+    border-left-color: #ffffff;
+}
+
+/* Специальные стили для Апостоликона */
+.apostolikon-header {
+    background: linear-gradient(135deg, #8e44ad 0%, #6c3483 100%) !important;
+}
+
+.dark-mode .apostolikon-header {
+    background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%) !important;
+}
+
+.book-item[data-category="apostolikon"] {
+    border-left: 3px solid #8e44ad;
+}
+
+.book-item[data-category="apostolikon"]:hover {
+    border-left-color: #6c3483;
+    background: rgba(142, 68, 173, 0.1);
+}
+
+.dark-mode .book-item[data-category="apostolikon"]:hover {
+    border-left-color: #9b59b6;
+    background: rgba(155, 89, 182, 0.15);
+}
+
+.book-item[data-category="apostolikon"].selected {
+    background: linear-gradient(135deg, #8e44ad 0%, #6c3483 100%) !important;
+    border-left-color: #ffffff;
 }
