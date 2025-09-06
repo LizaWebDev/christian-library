@@ -479,16 +479,6 @@ body {
     border-color: #4a6580;
 }
 
-.verse-container:hover .verse-number {
-    background: linear-gradient(135deg, #3a506b 0%, #2c3e50 100%);
-    color: white;
-    transform: scale(1.05);
-}
-
-.dark-mode .verse-container:hover .verse-number {
-    background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
-}
-
 .verse-text {
     flex: 1;
     text-align: justify;
@@ -827,5 +817,55 @@ body {
 
     .floating-menu-btn:active {
         transform: scale(0.95);
+    }
+}
+
+/* Убираем кнопку закрытия */
+.close-sidebar {
+    display: none; /* Полностью скрываем кнопку закрытия */
+}
+
+/* Для мобильных устройств */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        left: -320px;
+        top: 0;
+        bottom: 0;
+        height: 100vh;
+        z-index: 999;
+        width: 85%;
+        max-width: 320px;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+        left: 0;
+    }
+
+    /* Улучшаем touch targets для мобильных */
+    .book-item {
+        padding: 1rem 1.2rem;
+        margin-bottom: 0.5rem;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        font-size: 1.1rem;
+    }
+
+    .category-header {
+        padding: 1rem 1.2rem;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        font-size: 1.1rem;
+    }
+
+    /* Улучшаем overlay */
+    .sidebar-overlay {
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 998;
     }
 }
