@@ -25,11 +25,14 @@ body {
 .app-header {
     background-color: #3a506b;
     color: white;
-    padding: 1rem;
+    padding: 0.8rem 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .dark-mode .app-header {
@@ -37,23 +40,26 @@ body {
 }
 
 .app-header h1 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     margin: 0;
+    flex: 1;
+    text-align: center;
 }
 
 .sidebar-toggle {
     background: none;
     border: none;
     color: white;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     cursor: pointer;
     padding: 0.5rem;
+    z-index: 1001;
 }
 
 .controls {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.3rem;
 }
 
 .controls button {
@@ -61,10 +67,11 @@ body {
     border: none;
     color: white;
     padding: 0.5rem;
-    margin-left: 0.5rem;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.2s;
+    font-size: 0.9rem;
+    min-width: 2.2rem;
 }
 
 .controls button.active {
@@ -76,9 +83,9 @@ body {
 }
 
 .font-size-label {
-    font-size: 0.9rem;
-    margin: 0 0.3rem;
-    min-width: 3rem;
+    font-size: 0.8rem;
+    margin: 0 0.2rem;
+    min-width: 2.5rem;
     text-align: center;
 }
 
@@ -86,6 +93,7 @@ body {
     display: flex;
     flex: 1;
     overflow: hidden;
+    position: relative;
 }
 
 .sidebar-overlay {
@@ -94,17 +102,18 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.7);
     z-index: 998;
 }
 
 .sidebar {
-    width: 300px;
-    background-color: #e9e1d1;
+    width: 280px;
+    background-color: #f5f0e5;
     padding: 1rem;
     overflow-y: auto;
-    border-right: 1px solid #d4c9b4;
-    transition: all 0.3s ease;
+    border-right: 1px solid #e0d6c2;
+    transition: transform 0.3s ease-in-out;
+    position: relative;
 }
 
 .dark-mode .sidebar {
@@ -118,11 +127,18 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e0d6c2;
+}
+
+.dark-mode .sidebar-header {
+    border-bottom-color: #34495e;
 }
 
 .sidebar-header h2 {
     color: #3a506b;
     margin: 0;
+    font-size: 1.3rem;
 }
 
 .dark-mode .sidebar-header h2 {
@@ -133,9 +149,9 @@ body {
     background: none;
     border: none;
     color: #5c6b7e;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     cursor: pointer;
-    padding: 0.3rem;
+    padding: 0.5rem;
     border-radius: 4px;
     transition: background-color 0.2s;
 }
@@ -149,20 +165,21 @@ body {
 }
 
 .category-section {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.2rem;
 }
 
 .category-header {
-    margin: 1.2rem 0 0.8rem 0;
-    padding: 0.8rem 1rem;
+    margin: 1rem 0 0.6rem 0;
+    padding: 0.8rem;
     background: linear-gradient(135deg, #4a6580 0%, #3a506b 100%);
     color: white;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 0.95rem;
     display: flex;
     align-items: center;
     transition: all 0.2s;
+    user-select: none;
 }
 
 .dark-mode .category-header {
@@ -174,15 +191,15 @@ body {
 }
 
 .collapse-icon {
-    margin-right: 0.8rem;
-    font-size: 0.8rem;
-    width: 1rem;
+    margin-right: 0.6rem;
+    font-size: 0.7rem;
+    width: 0.8rem;
     text-align: center;
 }
 
 .book-count {
     margin-left: auto;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     opacity: 0.8;
 }
 
@@ -195,13 +212,14 @@ body {
 }
 
 .book-item {
-    padding: 0.8rem 1rem;
+    padding: 0.8rem;
     cursor: pointer;
     border-radius: 6px;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.3rem;
     transition: all 0.2s;
     border-left: 3px solid transparent;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
 }
 
 .dark-mode .book-item {
@@ -210,7 +228,7 @@ body {
 }
 
 .book-item:hover {
-    background: rgba(74, 101, 128, 0.1);
+    background: rgba(74, 101, 128, 0.15);
     border-left-color: #4a6580;
     transform: translateX(2px);
 }
@@ -224,6 +242,7 @@ body {
     background: linear-gradient(135deg, #3a506b 0%, #2c3e50 100%);
     color: white;
     border-left-color: #1abc9c;
+    transform: translateX(3px);
 }
 
 .dark-mode .book-item.selected {
@@ -233,32 +252,41 @@ body {
 
 .reader {
     flex: 1;
-    padding: 2rem;
+    padding: 1rem;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+    min-width: 0;
+    background-color: #f9f5e9;
+}
+
+.dark-mode .reader {
+    background-color: #1a1a1a;
 }
 
 .welcome-message {
     text-align: center;
-    margin-top: 3rem;
+    margin: 2rem auto;
     color: #5c6b7e;
-    padding: 3rem;
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    max-width: 500px;
+    border: 1px solid #e0d6c2;
 }
 
 .dark-mode .welcome-message {
     color: #bdc3c7;
-    background: rgba(44, 62, 80, 0.8);
+    background: rgba(44, 62, 80, 0.9);
+    border-color: #34495e;
 }
 
 .welcome-message h2 {
-    font-size: 2.2rem;
-    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
     color: #3a506b;
-    font-weight: 300;
+    font-weight: 400;
 }
 
 .dark-mode .welcome-message h2 {
@@ -266,9 +294,9 @@ body {
 }
 
 .welcome-message p {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: #666;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .dark-mode .welcome-message p {
@@ -278,8 +306,8 @@ body {
 .welcome-stats {
     display: flex;
     justify-content: center;
-    gap: 2rem;
-    margin-top: 2rem;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
 }
 
 .stat {
@@ -289,14 +317,15 @@ body {
 }
 
 .stat-number {
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: bold;
     color: #1abc9c;
 }
 
 .stat-label {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: #666;
+    margin-top: 0.3rem;
 }
 
 .dark-mode .stat-label {
@@ -307,15 +336,17 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     flex-wrap: wrap;
     gap: 1rem;
+    padding: 0 0.5rem;
 }
 
 .book-info h2 {
     color: #3a506b;
-    margin: 0 0 0.5rem 0;
-    font-size: 2rem;
+    margin: 0 0 0.3rem 0;
+    font-size: 1.5rem;
+    line-height: 1.3;
 }
 
 .dark-mode .book-info h2 {
@@ -326,6 +357,7 @@ body {
     color: #666;
     font-style: italic;
     margin: 0;
+    font-size: 0.9rem;
 }
 
 .dark-mode .book-description {
@@ -336,15 +368,18 @@ body {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
 .chapter-nav-btn {
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0.8rem;
     background-color: #3a506b;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
+    font-size: 1rem;
+    min-width: 2.5rem;
 }
 
 .dark-mode .chapter-nav-btn {
@@ -363,12 +398,14 @@ body {
 .chapter-info {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
+    flex-wrap: wrap;
 }
 
 .chapter-label {
     font-weight: 500;
     color: #3a506b;
+    font-size: 0.9rem;
 }
 
 .dark-mode .chapter-label {
@@ -378,8 +415,10 @@ body {
 .chapter-select {
     padding: 0.5rem;
     border: 1px solid #d4c9b4;
-    border-radius: 4px;
+    border-radius: 6px;
     background-color: white;
+    font-size: 0.9rem;
+    min-width: 60px;
 }
 
 .dark-mode .chapter-select {
@@ -390,6 +429,7 @@ body {
 
 .total-chapters {
     color: #666;
+    font-size: 0.9rem;
 }
 
 .dark-mode .total-chapters {
@@ -398,20 +438,22 @@ body {
 
 .text-content {
     line-height: 1.8;
-    max-width: 800px;
-    margin: 0 auto;
     width: 100%;
+    max-width: none;
+    margin: 0 auto;
+    flex: 1;
 }
 
 .chapter-header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
+    padding: 0 0.5rem;
 }
 
 .chapter-header h3 {
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
     color: #3a506b;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
 }
 
 .dark-mode .chapter-header h3 {
@@ -421,6 +463,8 @@ body {
 .chapter-description {
     color: #666;
     font-style: italic;
+    font-size: 0.9rem;
+    line-height: 1.4;
 }
 
 .dark-mode .chapter-description {
@@ -428,49 +472,55 @@ body {
 }
 
 .bible-text {
-    background: rgba(255, 255, 255, 0.9);
-    padding: 2rem;
+    background: white;
+    padding: 1.5rem;
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     border: 1px solid #e9e1d1;
+    margin: 0 0.5rem;
 }
 
 .dark-mode .bible-text {
-    background: rgba(44, 62, 80, 0.9);
+    background: rgba(44, 62, 80, 0.95);
     border-color: #34495e;
 }
 
 .verse-container {
     display: flex;
     align-items: flex-start;
-    margin-bottom: 1rem;
-    line-height: 1.8;
+    margin-bottom: 0.8rem;
+    line-height: 1.7;
     position: relative;
     transition: all 0.3s ease;
-    padding: 0.5rem;
-    border-radius: 8px;
+    padding: 0.4rem 0.4rem 0.4rem 0;
+    border-radius: 6px;
 }
 
 .verse-container:hover {
-    background: rgba(74, 101, 128, 0.05);
+    background: rgba(245, 240, 229, 0.7);
+}
+
+.dark-mode .verse-container:hover {
+    background: rgba(74, 101, 128, 0.04);
 }
 
 .verse-number {
-    font-size: 0.8em;
-    font-weight: 700;
+    font-size: 0.75em;
+    font-weight: 600;
     color: #5c6b7e;
-    margin-right: 1rem;
-    padding: 0.3rem 0.6rem;
-    border-radius: 12px;
+    margin-right: 0.8rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 10px;
     background: #f0f6ff;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 2.5rem;
-    height: 2.2rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    min-width: 2rem;
+    height: 1.8rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     border: 1px solid #d1e0ff;
     transition: all 0.3s ease;
+    flex-shrink: 0;
 }
 
 .dark-mode .verse-number {
@@ -482,15 +532,23 @@ body {
 .verse-text {
     flex: 1;
     text-align: justify;
-    padding-right: 1rem;
+    padding-right: 0.5rem;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    color: #333;
+}
+
+.dark-mode .verse-text {
+    color: #e6e6e6;
 }
 
 .search-highlight {
     background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
     color: #1e293b;
-    padding: 0.15rem 0.3rem;
-    border-radius: 4px;
-    font-weight: 700;
+    padding: 0.1rem 0.2rem;
+    border-radius: 3px;
+    font-weight: 600;
     border: 1px solid #f59e0b;
 }
 
@@ -501,31 +559,35 @@ body {
 
 .verse-container.search-current {
     background: linear-gradient(135deg, rgba(96, 165, 250, 0.15) 0%, rgba(59, 130, 246, 0.2) 100%) !important;
-    border-left: 4px solid #3b82f6;
-    transform: scale(1.02);
+    border-left: 3px solid #3b82f6;
+    transform: scale(1.01);
+    margin: 0.5rem 0;
 }
 
 .dark-mode .verse-container.search-current {
     background: linear-gradient(135deg, rgba(96, 165, 250, 0.2) 0%, rgba(59, 130, 246, 0.25) 100%) !important;
-    border-left: 4px solid #60a5fa;
+    border-left: 3px solid #60a5fa;
 }
 
 .bottom-navigation {
     display: flex;
-    gap: 1rem;
+    gap: 0.8rem;
     justify-content: center;
     margin-top: 2rem;
     padding: 1rem;
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 12px;
+    background: white;
+    border-radius: 10px;
+    flex-wrap: wrap;
+    border: 1px solid #e9e1d1;
 }
 
 .dark-mode .bottom-navigation {
-    background: rgba(44, 62, 80, 0.8);
+    background: rgba(44, 62, 80, 0.9);
+    border-color: #34495e;
 }
 
 .nav-btn {
-    padding: 1rem 1.5rem;
+    padding: 0.8rem 1.2rem;
     background: linear-gradient(135deg, #3a506b 0%, #2c3e50 100%);
     color: white;
     border: none;
@@ -533,7 +595,9 @@ body {
     cursor: pointer;
     transition: all 0.2s;
     flex: 1;
+    min-width: 140px;
     max-width: 200px;
+    font-size: 0.9rem;
 }
 
 .dark-mode .nav-btn {
@@ -541,18 +605,23 @@ body {
 }
 
 .nav-btn:hover:not(:disabled) {
-    transform: translateY(-2px);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
 .nav-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    transform: none;
 }
 
 .search-panel {
     background: linear-gradient(135deg, #3a506b 0%, #2c3e50 100%);
-    padding: 1rem;
+    padding: 0.8rem 1rem;
     border-bottom: 1px solid #d4c9b4;
+    position: sticky;
+    top: 57px;
+    z-index: 999;
 }
 
 .dark-mode .search-panel {
@@ -564,15 +633,15 @@ body {
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.8rem;
 }
 
 .search-input-large {
     width: 100%;
-    padding: 1rem 1.5rem;
+    padding: 0.8rem 1.2rem;
     border: 2px solid #d4c9b4;
     border-radius: 8px;
-    font-size: 1.1rem;
+    font-size: 1rem;
     background: white;
 }
 
@@ -587,22 +656,35 @@ body {
     justify-content: space-between;
     align-items: center;
     color: white;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.search-count {
+    flex: 1;
+    min-width: 120px;
 }
 
 .search-navigation {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.4rem;
     align-items: center;
 }
 
+.current-position {
+    margin-right: 0.5rem;
+    font-size: 0.8rem;
+}
+
 .search-navigation button {
-    padding: 0.5rem;
+    padding: 0.4rem 0.6rem;
     background: rgba(255, 255, 255, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.3);
     color: white;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 0.9rem;
 }
 
 .search-navigation button:disabled {
@@ -614,258 +696,314 @@ body {
     color: white;
     text-align: center;
     font-style: italic;
+    font-size: 0.9rem;
 }
 
 .floating-menu-btn {
     position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    width: 3.5rem;
-    height: 3.5rem;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 3.2rem;
+    height: 3.2rem;
     border-radius: 50%;
     background: linear-gradient(135deg, #3a506b 0%, #2c3e50 100%);
     color: white;
     border: none;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
     z-index: 997;
+    transition: all 0.3s ease;
 }
 
 .dark-mode .floating-menu-btn {
     background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
 }
 
-@media (max-width: 768px) {
-    .sidebar {
-        position: fixed;
-        left: -300px;
-        height: calc(100% - 60px);
-        z-index: 100;
-    }
-
-    .sidebar.open {
-        left: 0;
-    }
-
-    .reader-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .verse-container {
-        padding-left: 2rem;
-        text-indent: -1.5rem;
-    }
-
-    .verse-number {
-        min-width: 2rem;
-        margin-right: 0.6rem;
-    }
+.floating-menu-btn:active {
+    transform: scale(0.95);
 }
 
-@media (max-width: 480px) {
+/* Адаптивные стили для мобильных устройств */
+@media (max-width: 768px) {
     .app-header {
-        padding: 0.8rem;
+        padding: 0.7rem 0.8rem;
     }
 
     .app-header h1 {
-        font-size: 1.3rem;
+        font-size: 1.1rem;
+        margin: 0 0.5rem;
+    }
+
+    .controls {
+        gap: 0.2rem;
     }
 
     .controls button {
         padding: 0.4rem;
-        margin-left: 0.3rem;
+        font-size: 0.8rem;
+        min-width: 2rem;
     }
 
     .font-size-label {
         display: none;
     }
 
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        height: 100vh;
+        width: 85%;
+        max-width: 300px;
+        z-index: 1000;
+        transform: translateX(-100%);
+        padding: 1rem 0.8rem;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+        left: 0;
+    }
+
+    .sidebar-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .close-sidebar {
+        font-size: 1.4rem;
+        padding: 0.4rem;
+    }
+
+    .category-header {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+    }
+
+    .book-item {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+        margin-bottom: 0.2rem;
+    }
+
+    .reader {
+        padding: 0.8rem;
+    }
+
+    .reader-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.8rem;
+    }
+
+    .book-info h2 {
+        font-size: 1.3rem;
+        text-align: center;
+    }
+
+    .chapter-selector {
+        justify-content: center;
+    }
+
+    .bible-text {
+        padding: 1rem;
+        margin: 0;
+        border-radius: 8px;
+    }
+
     .verse-container {
-        padding-left: 1.8rem;
-        text-indent: -1.2rem;
+        padding: 0.3rem 0.3rem 0.3rem 0;
+        margin-bottom: 0.6rem;
     }
 
     .verse-number {
         min-width: 1.8rem;
-        margin-right: 0.4rem;
-        padding: 0.2rem 0.4rem;
+        height: 1.6rem;
+        margin-right: 0.6rem;
+        font-size: 0.7em;
+    }
+
+    .verse-text {
+        font-size: 0.95em;
+    }
+
+    .bottom-navigation {
+        padding: 0.8rem;
+        gap: 0.6rem;
+    }
+
+    .nav-btn {
+        padding: 0.7rem 1rem;
+        min-width: 120px;
+        font-size: 0.85rem;
+    }
+
+    .search-panel {
+        top: 53px;
+        padding: 0.7rem 0.8rem;
+    }
+
+    .search-input-large {
+        padding: 0.7rem 1rem;
+        font-size: 0.95rem;
+    }
+
+    .search-results-info {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+
+    .search-navigation {
+        justify-content: center;
     }
 
     .floating-menu-btn {
         bottom: 1rem;
         right: 1rem;
-        width: 3rem;
-        height: 3rem;
+        width: 2.8rem;
+        height: 2.8rem;
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .app-header {
+        padding: 0.6rem;
+    }
+
+    .app-header h1 {
+        font-size: 1rem;
+    }
+
+    .controls button {
+        padding: 0.3rem;
+        min-width: 1.8rem;
+        font-size: 0.75rem;
+    }
+
+    .sidebar {
+        width: 90%;
+        padding: 0.8rem 0.6rem;
+    }
+
+    .reader {
+        padding: 0.6rem;
+    }
+
+    .welcome-message {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+
+    .welcome-message h2 {
+        font-size: 1.4rem;
+    }
+
+    .book-info h2 {
         font-size: 1.2rem;
     }
-}
 
-/* App.css (дополнения для мобильных) */
-
-/* Улучшаем кнопку закрытия для мобильных */
-.sidebar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 2px solid;
-}
-
-.close-sidebar {
-    background: none;
-    border: none;
-    color: #5c6b7e;
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 4px;
-    transition: background-color 0.2s;
-}
-
-.close-sidebar:hover {
-    background: rgba(0, 0, 0, 0.1);
-}
-
-.dark-mode .close-sidebar {
-    color: #bdc3c7;
-}
-
-/* Для мобильных устройств */
-@media (max-width: 768px) {
-    .sidebar {
-        position: fixed;
-        left: -320px;
-        top: 0;
-        bottom: 0;
-        height: 100vh;
-        z-index: 999;
-        width: 85%;
-        max-width: 320px;
-        transform: translateX(-100%);
-        transition: transform 0.3s ease-in-out;
+    .chapter-nav-btn {
+        padding: 0.4rem 0.6rem;
+        min-width: 2.2rem;
     }
 
-    .sidebar.open {
-        transform: translateX(0);
-        left: 0;
+    .chapter-select {
+        padding: 0.4rem;
+        min-width: 50px;
     }
 
-    .close-sidebar {
-        font-size: 1.8rem;
+    .bible-text {
         padding: 0.8rem;
-        background: rgba(0, 0, 0, 0.1);
     }
 
-    .close-sidebar:hover {
-        background: rgba(0, 0, 0, 0.2);
+    .verse-number {
+        min-width: 1.6rem;
+        height: 1.4rem;
+        margin-right: 0.5rem;
+        padding: 0.1rem 0.4rem;
     }
 
-    /* Улучшаем touch targets для мобильных */
-    .book-item {
-        padding: 1rem 1.2rem;
-        margin-bottom: 0.5rem;
-        min-height: 50px;
-        display: flex;
-        align-items: center;
-        font-size: 1.1rem;
+    .nav-btn {
+        min-width: 110px;
+        padding: 0.6rem 0.8rem;
+        font-size: 0.8rem;
     }
 
-    .category-header {
-        padding: 1rem 1.2rem;
-        min-height: 50px;
-        display: flex;
-        align-items: center;
-        font-size: 1.1rem;
-    }
-
-    /* Улучшаем overlay */
-    .sidebar-overlay {
-        background: rgba(0, 0, 0, 0.7);
-        z-index: 998;
-    }
-
-    /* Анимация для плавного закрытия */
-    .book-item {
-        transition: all 0.2s ease;
-    }
-
-    .book-item:active {
-        transform: scale(0.98);
-        background: rgba(74, 101, 128, 0.2);
+    .search-input-large {
+        padding: 0.6rem 0.8rem;
     }
 }
 
-/* Улучшаем видимость выбранной книги */
-.book-item.selected {
-    transform: translateX(5px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-/* Улучшаем floating button для мобильных */
-@media (max-width: 768px) {
-    .floating-menu-btn {
-        bottom: 2rem;
-        right: 2rem;
-        width: 4rem;
-        height: 4rem;
-        font-size: 1.8rem;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+/* Улучшения для очень маленьких экранов */
+@media (max-width: 360px) {
+    .app-header {
+        flex-wrap: wrap;
+        gap: 0.5rem;
     }
 
-    .floating-menu-btn:active {
-        transform: scale(0.95);
+    .app-header h1 {
+        order: -1;
+        width: 100%;
+        text-align: center;
+    }
+
+    .controls {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .chapter-info {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .nav-btn {
+        min-width: 100px;
+        font-size: 0.75rem;
     }
 }
 
-/* Убираем кнопку закрытия */
-.close-sidebar {
-    display: none; /* Полностью скрываем кнопку закрытия */
-}
-
-/* Для мобильных устройств */
-@media (max-width: 768px) {
+/* Улучшения для планшетов */
+@media (min-width: 769px) and (max-width: 1024px) {
     .sidebar {
-        position: fixed;
-        left: -320px;
-        top: 0;
-        bottom: 0;
-        height: 100vh;
-        z-index: 999;
-        width: 85%;
-        max-width: 320px;
-        transform: translateX(-100%);
-        transition: transform 0.3s ease-in-out;
+        width: 250px;
     }
 
-    .sidebar.open {
-        transform: translateX(0);
-        left: 0;
+    .reader {
+        padding: 1.5rem;
     }
 
-    /* Улучшаем touch targets для мобильных */
-    .book-item {
-        padding: 1rem 1.2rem;
-        margin-bottom: 0.5rem;
-        min-height: 50px;
-        display: flex;
-        align-items: center;
-        font-size: 1.1rem;
+    .bible-text {
+        padding: 1.8rem;
+    }
+}
+
+/* Оптимизация для больших экранов */
+@media (min-width: 1200px) {
+    .text-content {
+        max-width: 900px;
     }
 
-    .category-header {
-        padding: 1rem 1.2rem;
-        min-height: 50px;
-        display: flex;
-        align-items: center;
-        font-size: 1.1rem;
+    .bible-text {
+        padding: 2.5rem;
+    }
+}
+
+/* Улучшения доступности */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
 
-    /* Улучшаем overlay */
-    .sidebar-overlay {
-        background: rgba(0, 0, 0, 0.7);
-        z-index: 998;
+    .verse-container,
+    .book-item,
+    .category-header,
+    .nav-btn {
+        transition: none !important;
     }
 }

@@ -1,4 +1,3 @@
-// App.js
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import './App.css';
 import { books } from './data';
@@ -47,6 +46,11 @@ function App() {
             'apostolikon': true, 'nag-hammadi': true, 'other': true
         });
     }, []);
+
+    // Сохранение настроек шрифта
+    useEffect(() => {
+        localStorage.setItem('fontSize', fontSize.toString());
+    }, [fontSize]);
 
     // Поиск по текстам
     const performSearch = useCallback((query) => {
@@ -119,7 +123,10 @@ function App() {
         setSearchResults([]);
         setCurrentSearchIndex(-1);
         window.scrollTo(0, 0);
-    }, []);
+        if (isMobile) {
+            setSidebarOpen(false);
+        }
+    }, [isMobile]);
 
     const handleChapterSelect = useCallback((index) => {
         setSelectedChapter(index);
@@ -209,8 +216,8 @@ function App() {
                 >
                     {showVerseNumbers && (
                         <span className="verse-number">
-              {index + 1}
-            </span>
+                            {index + 1}
+                        </span>
                     )}
                     <span
                         className="verse-text"
@@ -302,13 +309,13 @@ function App() {
                         />
                         {searchResults.length > 0 && (
                             <div className="search-results-info">
-                <span className="search-count">
-                  Найдено: {searchResults.length} совпадений
-                </span>
+                                <span className="search-count">
+                                    Найдено: {searchResults.length} совпадений
+                                </span>
                                 <div className="search-navigation">
-                  <span className="current-position">
-                    {currentSearchIndex + 1} / {searchResults.length}
-                  </span>
+                                    <span className="current-position">
+                                        {currentSearchIndex + 1} / {searchResults.length}
+                                    </span>
                                     <button
                                         onClick={() => navigateSearchResults('prev')}
                                         disabled={searchResults.length <= 1}
@@ -345,9 +352,11 @@ function App() {
                     <div className="sidebar-content">
                         <div className="sidebar-header">
                             <h2>Книги</h2>
-                            <button className="close-sidebar" onClick={closeSidebar} title="Закрыть меню">
-                                ✕
-                            </button>
+                            {isMobile && (
+                                <button className="close-sidebar" onClick={closeSidebar} title="Закрыть меню">
+                                    ✕
+                                </button>
+                            )}
                         </div>
                         <div className="book-categories">
                             {Object.entries(booksByCategory).map(([category, categoryBooks]) => (
@@ -357,9 +366,9 @@ function App() {
                                             onClick={() => toggleSection(category)}
                                             className={`category-header ${categoryClasses[category] || ''}`}
                                         >
-                      <span className="collapse-icon">
-                        {expandedSections[category] ? '▼' : '►'}
-                      </span>
+                                            <span className="collapse-icon">
+                                                {expandedSections[category] ? '▼' : '►'}
+                                            </span>
                                             {categoryTitles[category]}
                                             <span className="book-count">({categoryBooks.length})</span>
                                         </h3>
@@ -368,13 +377,7 @@ function App() {
                                                 key={book.id}
                                                 className={`book-item ${selectedBook?.id === book.id ? 'selected' : ''}`}
                                                 data-category={category}
-                                                onClick={() => {
-                                                    handleBookSelect(book);
-                                                    // Закрываем sidebar с небольшой задержкой на мобильных
-                                                    if (isMobile) {
-                                                        setTimeout(() => setSidebarOpen(false), 150);
-                                                    }
-                                                }}
+                                                onClick={() => handleBookSelect(book)}
                                             >
                                                 {book.title}
                                             </div>
@@ -397,17 +400,17 @@ function App() {
                                     <span className="stat-label">книг</span>
                                 </div>
                                 <div className="stat">
-                  <span className="stat-number">{
-                      books.reduce((total, book) => total + book.chapters.length, 0)
-                  }</span>
+                                    <span className="stat-number">{
+                                        books.reduce((total, book) => total + book.chapters.length, 0)
+                                    }</span>
                                     <span className="stat-label">глав</span>
                                 </div>
                                 <div className="stat">
-                  <span className="stat-number">{
-                      books.reduce((total, book) => total +
-                          book.chapters.reduce((chapTotal, chapter) =>
-                              chapTotal + chapter.content.length, 0), 0)
-                  }</span>
+                                    <span className="stat-number">{
+                                        books.reduce((total, book) => total +
+                                            book.chapters.reduce((chapTotal, chapter) =>
+                                                chapTotal + chapter.content.length, 0), 0)
+                                    }</span>
                                     <span className="stat-label">стихов</span>
                                 </div>
                             </div>
