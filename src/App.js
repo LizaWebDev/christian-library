@@ -1,3 +1,4 @@
+// App.js
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import './App.css';
 import { books } from './data';
@@ -39,6 +40,12 @@ function App() {
         if (savedFontSize) setFontSize(Number(savedFontSize));
         if (savedDarkMode) setDarkMode(savedDarkMode === 'true');
         if (savedVerseNumbers) setShowVerseNumbers(savedVerseNumbers === 'true');
+
+        // Автоматически разворачиваем разделы
+        setExpandedSections({
+            'old-testament': true, 'new-testament': true, 'marcion-gospel': true,
+            'apostolikon': true, 'nag-hammadi': true, 'other': true
+        });
     }, []);
 
     // Поиск по текстам
@@ -111,11 +118,8 @@ function App() {
         setSearchQuery('');
         setSearchResults([]);
         setCurrentSearchIndex(-1);
-        if (isMobile) {
-            setSidebarOpen(false);
-        }
         window.scrollTo(0, 0);
-    }, [isMobile]);
+    }, []);
 
     const handleChapterSelect = useCallback((index) => {
         setSelectedChapter(index);
@@ -153,11 +157,17 @@ function App() {
     }, []);
 
     const toggleDarkMode = useCallback(() => {
-        setDarkMode(prev => !prev);
+        setDarkMode(prev => {
+            localStorage.setItem('darkMode', !prev);
+            return !prev;
+        });
     }, []);
 
     const toggleVerseNumbers = useCallback(() => {
-        setShowVerseNumbers(prev => !prev);
+        setShowVerseNumbers(prev => {
+            localStorage.setItem('showVerseNumbers', !prev);
+            return !prev;
+        });
     }, []);
 
     const toggleSearch = useCallback(() => {
@@ -335,11 +345,9 @@ function App() {
                     <div className="sidebar-content">
                         <div className="sidebar-header">
                             <h2>Книги</h2>
-                            {!isMobile && (
-                                <button className="close-sidebar" onClick={closeSidebar} title="Закрыть меню">
-                                    ✕
-                                </button>
-                            )}
+                            <button className="close-sidebar" onClick={closeSidebar} title="Закрыть меню">
+                                ✕
+                            </button>
                         </div>
                         <div className="book-categories">
                             {Object.entries(booksByCategory).map(([category, categoryBooks]) => (
@@ -360,7 +368,13 @@ function App() {
                                                 key={book.id}
                                                 className={`book-item ${selectedBook?.id === book.id ? 'selected' : ''}`}
                                                 data-category={category}
-                                                onClick={() => handleBookSelect(book)}
+                                                onClick={() => {
+                                                    handleBookSelect(book);
+                                                    // Закрываем sidebar с небольшой задержкой на мобильных
+                                                    if (isMobile) {
+                                                        setTimeout(() => setSidebarOpen(false), 150);
+                                                    }
+                                                }}
                                             >
                                                 {book.title}
                                             </div>
