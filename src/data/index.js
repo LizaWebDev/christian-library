@@ -16,7 +16,9 @@ import { gospelOfLord } from './marcion-gospel/gospel-of-lord.js';
 import { galatiansMarcion } from './apostolikon/galatians-marcion.js';
 
 // Наг-Хаммади
+import {prayerOfPaul} from './nag-hammadi/prayer-of-paul';
 import { gospelOfThomas } from './nag-hammadi/gospel-of-thomas.js';
+import { apocryphonOfJohn } from './nag-hammadi/apocryphon-of-jphn';
 
 // Другие тексты
 import { gospelOfMary } from './other/gospel-of-mary.js';
@@ -41,7 +43,9 @@ export const books = [
     galatiansMarcion,
 
     // Наг-Хаммади
+    prayerOfPaul,
     gospelOfThomas,
+    apocryphonOfJohn,
 
     // Другие тексты
     gospelOfMary,
