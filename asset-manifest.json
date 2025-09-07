@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/christian-library/static/css/main.9911775e.css",
-    "main.js": "/christian-library/static/js/main.a88a8005.js",
+    "main.js": "/christian-library/static/js/main.54a22cee.js",
     "static/js/453.9b139e3b.chunk.js": "/christian-library/static/js/453.9b139e3b.chunk.js",
     "index.html": "/christian-library/index.html",
     "main.9911775e.css.map": "/christian-library/static/css/main.9911775e.css.map",
-    "main.a88a8005.js.map": "/christian-library/static/js/main.a88a8005.js.map",
+    "main.54a22cee.js.map": "/christian-library/static/js/main.54a22cee.js.map",
     "453.9b139e3b.chunk.js.map": "/christian-library/static/js/453.9b139e3b.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.9911775e.css",
-    "static/js/main.a88a8005.js"
+    "static/js/main.54a22cee.js"
   ]
 }

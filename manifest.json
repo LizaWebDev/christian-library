@@ -1,7 +1,7 @@
 {
-  "short_name": "Библиотека",
-  "name": "Христианская библиотека",
-  "description": "Священные тексты и писания",
+  "short_name": "Христианская Библиотека",
+  "name": "Христианская библиотека: Библия и апокрифы",
+  "description": "Библия и апокрифы",
   "icons": [
     {
       "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxOTIiIGZpbGw9IiMzYTUwNmIiIHJ4PSIyMCIvPgogIDxwYXRoIGQ9Ik02NSA1MEgxMjdWNzVINjVWNTVaIiBmaWxsPSJ3aGl0ZSIvPgogIDxwYXRoIGQ9Ik02NSA4NUgxMjdWMTEwSDY1Vjg1WiIgZmlsbD0id2hpdGUiLz4KICA8cGF0aCBkPSJNNjUgMTIwSDEyN1YxNDVINjVWMTIwWiIgZmlsbD0id2hpdGUiLz4KICA8cGF0aCBkPSJNNjUgMTU1SDk3VjE3MEg2NVYxNTVaIiBmaWxsPSJ3aGl0ZSIvPgogIDxwYXRoIGQ9Ik0xNDUgNTBIMTY1VjE3MEgxNDVWNTVaIiBmaWxsPSIjOGI0NTEzIi8+Cjwvc3ZnPg==",
