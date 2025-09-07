@@ -3,7 +3,7 @@ export const matthew = {
     id: 'matthew',
     title: 'Евангелие от Матфея',
     category: 'new-testament',
-    description: 'Первое Евангелие, написанное для иудеев, представляет Иисуса как Мессию и Царя.',
+    description: 'Первое Евангелие, содержит много отсылок к Ветхому Завету',
     chapters: [
         {
             description: 'Родословие Иисуса Христа',

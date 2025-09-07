@@ -3,7 +3,7 @@ export const revelation = {
     id: 'revelation',
     title: 'Откровение',
     category: 'new-testament',
-    description: 'Апокалипсис Иоанна Богослова - книга о конце времен и втором пришествии Христа.',
+    description: 'Апокалипсис Иоанна Богослова',
     chapters: [
         {
             description: 'Пролог и видение Христа',
