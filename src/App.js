@@ -257,16 +257,7 @@ function App() {
             <header className="app-header">
                 <button className="sidebar-toggle" onClick={toggleSidebar}>
                     <div className="app-logo">
-                        <svg width="28" height="28" viewBox="0 0 32 32" className="app-icon">
-                            <path d="M6 4C4.89543 4 4 4.89543 4 6V26C4 27.1046 4.89543 28 6 28H26C27.1046 28 28 27.1046 28 26V6C28 4.89543 27.1046 4 26 4H6Z"
-                                  fill="#ffffff" stroke="#ffffff" strokeWidth="1"/>
-                            <path d="M9 8H23V12H9V8Z" fill="#3a506b"/>
-                            <path d="M9 14H23V16H9V14Z" fill="#3a506b"/>
-                            <path d="M9 18H23V20H9V18Z" fill="#3a506b"/>
-                            <path d="M9 22H19V24H9V22Z" fill="#3a506b"/>
-                            <path d="M24 8H26V24H24V8Z" fill="#8b4513"/>
-                            <circle cx="26" cy="6" r="2" fill="#d4af37"/>
-                        </svg>
+                        <span className="app-icon">📚</span>
                     </div>
                 </button>
                 <h1>Христианская библиотека</h1>

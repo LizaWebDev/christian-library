@@ -1008,7 +1008,6 @@ body {
     }
 }
 
-/* App.css - добавляем стили для иконки */
 .app-logo {
     display: flex;
     align-items: center;
@@ -1016,27 +1015,18 @@ body {
     width: 40px;
     height: 40px;
     border-radius: 10px;
-    background: linear-gradient(135deg, #8b4513 0%, #654321 100%);
-    padding: 6px;
+    background: linear-gradient(135deg, #3a506b 0%, #2c3e50 100%);
+    padding: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
-}
-
-.sidebar-toggle:hover .app-logo {
-    transform: scale(1.1) rotate(-5deg);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .app-icon {
-    transition: all 0.3s ease;
+    font-size: 24px;
+    display: block;
     filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));
 }
 
-.sidebar-toggle:hover .app-icon {
-    transform: scale(1.1);
-}
-
-/* Стили для плавающей кнопки с иконкой */
+/* Плавающая кнопка */
 .floating-menu-btn {
     position: fixed;
     bottom: 2rem;
@@ -1044,134 +1034,14 @@ body {
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #8b4513 0%, #654321 100%);
-    border: 2px solid #d4af37;
+    background: linear-gradient(135deg, #3a506b 0%, #2c3e50 100%);
+    color: white;
+    border: none;
+    font-size: 24px;
     cursor: pointer;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     z-index: 997;
-    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.floating-menu-btn::before {
-    content: '';
-    width: 30px;
-    height: 30px;
-    background: linear-gradient(135deg, #3a506b 0%, #2c3e50 100%);
-    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z'/%3E%3C/svg%3E");
-    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z'/%3E%3C/svg%3E");
-    mask-repeat: no-repeat;
-    -webkit-mask-repeat: no-repeat;
-    mask-position: center;
-    -webkit-mask-position: center;
-}
-
-.floating-menu-btn:hover {
-    transform: scale(1.1) rotate(5deg);
-    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5);
-}
-
-.floating-menu-btn:active {
-    transform: scale(0.95);
-}
-
-/* Темный режим для иконок */
-.dark-mode .app-logo {
-    background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-}
-
-.dark-mode .floating-menu-btn {
-    background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
-    border-color: #ffd700;
-}
-
-/* Адаптивность для мобильных */
-@media (max-width: 768px) {
-    .app-logo {
-        width: 36px;
-        height: 36px;
-        padding: 5px;
-    }
-
-    .app-icon {
-        width: 24px;
-        height: 24px;
-    }
-
-    .floating-menu-btn {
-        width: 50px;
-        height: 50px;
-        bottom: 1.5rem;
-        right: 1.5rem;
-    }
-
-    .floating-menu-btn::before {
-        width: 24px;
-        height: 24px;
-    }
-}
-
-@media (max-width: 480px) {
-    .app-logo {
-        width: 32px;
-        height: 32px;
-        padding: 4px;
-    }
-
-    .app-icon {
-        width: 20px;
-        height: 20px;
-    }
-
-    .floating-menu-btn {
-        width: 45px;
-        height: 45px;
-        bottom: 1rem;
-        right: 1rem;
-    }
-
-    .floating-menu-btn::before {
-        width: 20px;
-        height: 20px;
-    }
-}
-
-/* Анимация для иконки при загрузке */
-@keyframes bookFloat {
-    0% {
-        transform: translateY(0) rotate(0deg);
-    }
-    50% {
-        transform: translateY(-5px) rotate(2deg);
-    }
-    100% {
-        transform: translateY(0) rotate(0deg);
-    }
-}
-
-.app-logo {
-    animation: bookFloat 3s ease-in-out infinite;
-}
-
-/* Дополнительная иконка для welcome screen */
-.welcome-icon {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-    display: block;
-    animation: bookFloat 3s ease-in-out infinite;
-    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
-}
-
-/* Специальные стили для PWA */
-@media all and (display-mode: standalone) {
-    .app-header {
-        padding-top: env(safe-area-inset-top);
-    }
-
-    .floating-menu-btn {
-        bottom: calc(2rem + env(safe-area-inset-bottom));
-    }
 }
