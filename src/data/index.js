@@ -14,6 +14,9 @@ import { gospelOfLord } from './marcion-gospel/gospel-of-lord.js';
 
 // Апостоликон Маркиона
 import { galatiansMarcion } from './apostolikon/galatians-marcion.js';
+import { corinthians1Marcion } from "./apostolikon/corinthians1-marcion";
+import { corinthians2Marcion } from './apostolikon/corinthians2-marcion';
+import { romansMarcion } from './apostolikon/romans-marcion';
 
 // Наг-Хаммади
 import {prayerOfPaul} from './nag-hammadi/prayer-of-paul';
@@ -23,6 +26,7 @@ import { apocryphonOfJohn } from './nag-hammadi/apocryphon-of-jphn';
 // Другие тексты
 import { gospelOfMary } from './other/gospel-of-mary.js';
 import { gospelOfJudas } from './other/gospel-of-judas.js';
+
 
 // Собираем все книги в один массив
 export const books = [
@@ -41,6 +45,9 @@ export const books = [
 
     // Апостоликон Маркиона
     galatiansMarcion,
+    corinthians1Marcion,
+    corinthians2Marcion,
+    romansMarcion,
 
     // Наг-Хаммади
     prayerOfPaul,
