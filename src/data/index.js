@@ -17,6 +17,12 @@ import { galatiansMarcion } from './apostolikon/galatians-marcion.js';
 import { corinthians1Marcion } from "./apostolikon/corinthians1-marcion";
 import { corinthians2Marcion } from './apostolikon/corinthians2-marcion';
 import { romansMarcion } from './apostolikon/romans-marcion';
+import { thessalonians1Marcion } from './apostolikon/thessalonians1-marcion';
+import { thessalonians2Marcion } from './apostolikon/thessalonians2-marcion';
+import { laodiceansMarcion } from './apostolikon/laodiceans-marcion';
+import { colossiansMarcion } from './apostolikon/colossians-marcion';
+import { philemonMarcion } from './apostolikon/philemon-marcion';
+import { philippiansMarcion } from './apostolikon/philippians-marcion';
 
 // Наг-Хаммади
 import {prayerOfPaul} from './nag-hammadi/prayer-of-paul';
@@ -48,6 +54,14 @@ export const books = [
     corinthians1Marcion,
     corinthians2Marcion,
     romansMarcion,
+    thessalonians1Marcion,
+    thessalonians2Marcion,
+    laodiceansMarcion,
+    colossiansMarcion,
+    philemonMarcion,
+    philippiansMarcion,
+
+
 
     // Наг-Хаммади
     prayerOfPaul,
